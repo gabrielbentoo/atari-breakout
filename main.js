@@ -6,7 +6,9 @@ let colunas = 8;
 let larguraTijolo = 60;
 let alturaTijolo = 20;
 let espacamento = 5;
-
+let pontuacao = 0;
+let vidas = 3;
+let estadoJogo = "serve";
 
 function setup(){
     createCanvas(600, 600);
@@ -14,7 +16,7 @@ function setup(){
     //bola
     bola = {
         x: width /2,
-        y: height /2,
+        y: height -200,
         r:10,
         vx:0,
         vy:0
@@ -34,6 +36,11 @@ function setup(){
 
 function draw() {
     background(0);
+    fill("255");
+    textSize(16);
+    text("Score: " + pontuacao, 20, 20);
+    text("Vidas: " + vidas, 20, 40);
+    text("Clique na tela para começar!", 200, height /2);
 
     //bola
     ellipseMode(RADIUS); 
@@ -71,6 +78,22 @@ function draw() {
         fill(tijolos[i].color);
         rect(tijolos[i].x, tijolos[i].y, tijolos[i].w, tijolos[i].h);
     }
+
+    //colisao com tijolos
+    for (let i= tijolos.length - 1; i >= 0; i-- ) {
+        let b = tijolos[i];
+
+
+        if (bola.x + bola.r > b.x && bola.x - bola.r < b.x + b.w &&
+            bola.y + bola.r > b.y && bola.y - bola.r < b.y + b.h )
+            {
+            bola.vy *= -1;
+            pontuacao += 5;
+            tijolos.splice(i, 1);
+            break;
+        }
+    }
+
  
 }
 
