@@ -40,7 +40,7 @@ function draw() {
     textSize(16);
     text("Score: " + pontuacao, 20, 20);
     text("Vidas: " + vidas, 20, 40);
-    text("Clique na tela para começar!", 200, height /2);
+    
 
     //bola
     ellipseMode(RADIUS); 
@@ -52,48 +52,69 @@ function draw() {
     fill("yellow");
     rect (raquete.x, raquete.y, raquete.w, raquete.h);
 
-    // movimento da bola
-    bola.x = bola.x + bola.vx;
-    bola.y = bola.y + bola.vy;
+    
 
-    //colisao da bola
-    if (bola.x - bola.r < 0 || bola.x + bola.r > width) bola.vx *= -1;
-    if (bola.y - bola.r <0 ) bola.vy *= -1;
-
-    //movimento da raquete
-    raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
-
-    //colisao da raquete
-    if (bola.y + bola.r > raquete.y - raquete.h /2 && 
-        bola.y + bola.r < raquete.y + raquete.h /2 &&
-        bola.x > raquete.x - raquete.w /2 &&
-        bola.x <raquete.x + raquete.w /2
-    ) {
-        bola.vy *= -1;
-        let diff = bola.x - raquete.x;
-        bola.vx = diff * 0.1;
+    if (estadoJogo === "serve") {
+        textSize(18);
+        text("Clique na tela para começar!", 200, height /2);
+        bola.x = width /2;
+        bola.y = height -200;
+        bola.vx = 0;
+        bola.vy = 0;
     }
-    //mostrar tijolos
-    for (let i = 0; i < tijolos.length; i++) {
-        fill(tijolos[i].color);
-        rect(tijolos[i].x, tijolos[i].y, tijolos[i].w, tijolos[i].h);
-    }
+    if (estadoJogo === "play") {
+        // movimento da bola
+        bola.x = bola.x + bola.vx;
+        bola.y = bola.y + bola.vy;
 
-    //colisao com tijolos
-    for (let i= tijolos.length - 1; i >= 0; i-- ) {
-        let b = tijolos[i];
+        //colisao da bola
+        if (bola.x - bola.r < 0 || bola.x + bola.r > width) bola.vx *= -1;
+        if (bola.y - bola.r <0 ) bola.vy *= -1;
 
+        //movimento da raquete
+        raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
 
-        if (bola.x + bola.r > b.x && bola.x - bola.r < b.x + b.w &&
-            bola.y + bola.r > b.y && bola.y - bola.r < b.y + b.h )
-            {
+        //colisao da raquete
+        if (bola.y + bola.r > raquete.y - raquete.h /2 && 
+            bola.y + bola.r < raquete.y + raquete.h /2 &&
+            bola.x > raquete.x - raquete.w /2 &&
+            bola.x <raquete.x + raquete.w /2
+        ) {
             bola.vy *= -1;
-            pontuacao += 5;
-            tijolos.splice(i, 1);
-            break;
+            let diff = bola.x - raquete.x;
+            bola.vx = diff * 0.1;
+        }
+        //mostrar tijolos
+        for (let i = 0; i < tijolos.length; i++) {
+            fill(tijolos[i].color);
+            rect(tijolos[i].x, tijolos[i].y, tijolos[i].w, tijolos[i].h);
+        }
+
+        //colisao com tijolos
+        for (let i= tijolos.length - 1; i >= 0; i-- ) {
+            let b = tijolos[i];
+
+
+            if (bola.x + bola.r > b.x && bola.x - bola.r < b.x + b.w &&
+                bola.y + bola.r > b.y && bola.y - bola.r < b.y + b.h )
+                {
+                bola.vy *= -1;
+                pontuacao += 5;
+                tijolos.splice(i, 1);
+                break;
+            }
+        }
+        //se cair no fundo
+        if (bola.y - bola.r > height) {
+            vidas--;
+            if (vidas > 0){
+                estadoJogo = "serve";
+            }
+            else {
+                estadoJogo = "over";
+            }
         }
     }
-
  
 }
 
@@ -101,6 +122,7 @@ function mousePressed() {
      // direção/movimento da bola
     bola.vx = random(-4, 4);
     bola.vy = 4;
+    estadoJogo = "play";
 }
 
 function criarTijolos() {
