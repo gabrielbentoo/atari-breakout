@@ -40,7 +40,12 @@ function draw() {
     textSize(16);
     text("Score: " + pontuacao, 20, 20);
     text("Vidas: " + vidas, 20, 40);
-    
+
+    //mostrar tijolos
+    for (let i = 0; i < tijolos.length; i++) {
+        fill(tijolos[i].color);
+        rect(tijolos[i].x, tijolos[i].y, tijolos[i].w, tijolos[i].h);
+    }
 
     //bola
     ellipseMode(RADIUS); 
@@ -52,6 +57,8 @@ function draw() {
     fill("yellow");
     rect (raquete.x, raquete.y, raquete.w, raquete.h);
 
+    //movimento da raquete
+    raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
     
 
     if (estadoJogo === "serve") {
@@ -71,8 +78,7 @@ function draw() {
         if (bola.x - bola.r < 0 || bola.x + bola.r > width) bola.vx *= -1;
         if (bola.y - bola.r <0 ) bola.vy *= -1;
 
-        //movimento da raquete
-        raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
+        
 
         //colisao da raquete
         if (bola.y + bola.r > raquete.y - raquete.h /2 && 
@@ -84,11 +90,7 @@ function draw() {
             let diff = bola.x - raquete.x;
             bola.vx = diff * 0.1;
         }
-        //mostrar tijolos
-        for (let i = 0; i < tijolos.length; i++) {
-            fill(tijolos[i].color);
-            rect(tijolos[i].x, tijolos[i].y, tijolos[i].w, tijolos[i].h);
-        }
+        
 
         //colisao com tijolos
         for (let i= tijolos.length - 1; i >= 0; i-- ) {
@@ -115,14 +117,27 @@ function draw() {
             }
         }
     }
+    if (estadoJogo === "over") {
+        textSize(24);
+        text("Você perdeu.", width /2 -70, height /2);
+    }
+    if (tijolos.length === 0 && estadoJogo === "play") {
+        textSize(24);
+        text("Parabéns, você venceu!", width /2 -120, height /2);
+        bola.vx = 0;
+        bola.vy = 0;
+        estadoJogo = "end";
+    }
  
 }
 
 function mousePressed() {
-     // direção/movimento da bola
-    bola.vx = random(-4, 4);
-    bola.vy = 4;
-    estadoJogo = "play";
+    if (estadoJogo === "serve") {
+        // direção/movimento da bola
+        bola.vx = random(-4, 4);
+        bola.vy = 4;
+        estadoJogo = "play";
+    }
 }
 
 function criarTijolos() {
