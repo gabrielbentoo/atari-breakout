@@ -9,6 +9,9 @@ let espacamento = 5;
 let pontuacao = 0;
 let vidas = 3;
 let estadoJogo = "serve";
+let maxSpeed = 12;
+let velocidadeTijolos = 0.1;
+
 
 function setup(){
     createCanvas(600, 600);
@@ -43,8 +46,13 @@ function draw() {
 
     //mostrar tijolos
     for (let i = 0; i < tijolos.length; i++) {
+        tijolos[i].y +=velocidadeTijolos;
         fill(tijolos[i].color);
         rect(tijolos[i].x, tijolos[i].y, tijolos[i].w, tijolos[i].h);
+        if (tijolos[i].y + tijolos[i].h >= raquete.y - raquete.h/2) {
+            vidas = 0;
+            estadoJogo = "over";
+        }
     }
 
     //bola
@@ -101,9 +109,15 @@ function draw() {
                 bola.y + bola.r > b.y && bola.y - bola.r < b.y + b.h )
                 {
                 bola.vy *= -1;
+                bola.vx *= 1.05;
+                bola.vy *= 1.05;
+                bola.vx = constrain(bola.vx, -maxSpeed, maxSpeed);
+                bola.vy = constrain(bola.vy, -maxSpeed, maxSpeed);
                 pontuacao += 5;
                 tijolos.splice(i, 1);
                 break;
+
+                
             }
         }
         //se cair no fundo
@@ -122,11 +136,15 @@ function draw() {
         text("Você perdeu.", width /2 -70, height /2);
     }
     if (tijolos.length === 0 && estadoJogo === "play") {
-        textSize(24);
-        text("Parabéns, você venceu!", width /2 -120, height /2);
         bola.vx = 0;
         bola.vy = 0;
+        
+        
         estadoJogo = "end";
+    }
+    if (estadoJogo === "end") {
+        textSize(24);
+        text("Parabéns, você venceu!", width /2 -120, height /2);
     }
  
 }
