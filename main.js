@@ -11,7 +11,17 @@ let vidas = 3;
 let estadoJogo = "serve";
 let maxSpeed = 12;
 let velocidadeTijolos = 0.1;
+let somBatida;
+let somClique;
+let offSet = 0;
 
+
+
+
+function preload() {
+    somBatida = loadSound("hit.mp3");
+    somClique = loadSound("click.mp3");
+}
 
 function setup(){
     createCanvas(600, 600);
@@ -66,9 +76,18 @@ function draw() {
     rect (raquete.x, raquete.y, raquete.w, raquete.h);
 
     //movimento da raquete
-    raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
-    
+    // raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
 
+    //raquete automatica
+    if (frameCount % 10 === 0) {
+        offSet = random(-20, 20);
+    
+    }
+    let targetX = bola.x + offSet;
+    raquete.x = lerp(raquete.x, targetX, 0.1);
+    raquete.x = constrain(raquete.x, raquete.w /2, width - raquete.w /2);
+    
+    
     if (estadoJogo === "serve") {
         textSize(18);
         text("Clique na tela para começar!", 200, height /2);
@@ -97,6 +116,7 @@ function draw() {
             bola.vy *= -1;
             let diff = bola.x - raquete.x;
             bola.vx = diff * 0.1;
+            if (somBatida.isLoaded()) somBatida.play();
         }
         
 
@@ -115,6 +135,7 @@ function draw() {
                 bola.vy = constrain(bola.vy, -maxSpeed, maxSpeed);
                 pontuacao += 5;
                 tijolos.splice(i, 1);
+                if (somClique.isLoaded()) somClique.play();
                 break;
 
                 
@@ -176,3 +197,4 @@ function criarTijolos() {
     }
     
 }
+
