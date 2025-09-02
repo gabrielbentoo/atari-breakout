@@ -76,9 +76,10 @@ function draw() {
     rect (raquete.x, raquete.y, raquete.w, raquete.h);
 
     //movimento da raquete
-    // raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
+     raquete.x = constrain(mouseX, raquete.w /2, width - raquete.w /2);
 
     //raquete automatica
+    /*
     if (frameCount % 10 === 0) {
         offSet = random(-20, 20);
     
@@ -86,7 +87,9 @@ function draw() {
     let targetX = bola.x + offSet;
     raquete.x = lerp(raquete.x, targetX, 0.1);
     raquete.x = constrain(raquete.x, raquete.w /2, width - raquete.w /2);
-    
+    //fim da raquete automatica
+    */
+
     
     if (estadoJogo === "serve") {
         textSize(18);
